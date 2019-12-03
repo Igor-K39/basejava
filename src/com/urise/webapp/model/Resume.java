@@ -1,4 +1,4 @@
-package com.urise.wepapp.model;
+package com.urise.webapp.model;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class Resume {
         if (o == null || getClass() != o.getClass()) return false;
 
         Resume resume = (Resume) o;
-        
+
         return Objects.equals(uuid, resume.uuid);
     }
 

@@ -1,23 +1,25 @@
-package com.urise.wepapp.storage;
+package com.urise.webapp.storage;
 
-import com.urise.wepapp.model.Resume;
+import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
+public class ArrayStorage implements Storage {
     private static final int STORAGE_LIMIT = 10_000;
 
     private Resume[] storage = new Resume[STORAGE_LIMIT];
     private int size = 0;
 
+    @Override
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
+    @Override
     public void update(Resume resume) {
         int index = findIndex(resume.getUuid());
         if (index != -1) {
@@ -28,6 +30,7 @@ public class ArrayStorage {
         }
     }
 
+    @Override
     public void save(Resume resume) {
         if (size < STORAGE_LIMIT) {
             if (findIndex(resume.getUuid()) == -1) {
@@ -41,6 +44,7 @@ public class ArrayStorage {
         }
     }
 
+    @Override
     public Resume get(String uuid) {
         int index = findIndex(uuid);
         if (index != -1) {
@@ -51,6 +55,7 @@ public class ArrayStorage {
         }
     }
 
+    @Override
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index != -1) {
@@ -65,10 +70,12 @@ public class ArrayStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
+    @Override
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
+    @Override
     public int size() {
         return size;
     }
