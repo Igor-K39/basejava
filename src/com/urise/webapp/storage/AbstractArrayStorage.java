@@ -2,6 +2,8 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
+import java.util.Arrays;
+
 public abstract class AbstractArrayStorage implements Storage {
     protected static final int STORAGE_LIMIT = 10_000;
 
@@ -9,14 +11,9 @@ public abstract class AbstractArrayStorage implements Storage {
     protected int size = 0;
 
     @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
     public Resume get(String uuid) {
         int index = getIndex(uuid);
-        if (index != -1) {
+        if (index > -1) {
             return storage[index];
         } else {
             System.out.printf("Resume %s doesn't exist\n", uuid);
@@ -24,5 +21,64 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
+    /**
+     * @return array, contains only Resumes in storage (without null)
+     */
+    @Override
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
+    }
+
+    @Override
+    public void save(Resume resume) {
+        if (size == STORAGE_LIMIT) {
+            System.out.println("Storage overflow");
+            return;
+        }
+
+        int index = getIndex(resume.getUuid());
+        if (index < 0) {
+            saveInStorage(index, resume);
+        } else {
+            System.out.printf("Resume %s already exists\n", resume.getUuid());
+        }
+    }
+
+    @Override
+    public void update(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index > -1) {
+            storage[index] = resume;
+        } else {
+            System.out.printf("Resume %s doesn't exist\n", resume.getUuid());
+        }
+    }
+
+    @Override
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index > -1) {
+            size--;
+            removeInStorage(index);
+        } else {
+            System.out.printf("Resume %s doesn't exist\n", uuid);
+        }
+    }
+
+    @Override
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
     protected abstract int getIndex(String uuid);
+
+    protected abstract void removeInStorage(int position);
+
+    protected abstract void saveInStorage(int index, Resume resume);
 }
