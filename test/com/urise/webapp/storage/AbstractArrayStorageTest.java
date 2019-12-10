@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractArrayStorageTest {
+public abstract class AbstractArrayStorageTest {
     private Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -21,7 +21,7 @@ public class AbstractArrayStorageTest {
     private static final Resume RESUME_4 = new Resume(UUID_4);
     private static final Resume[] RESUME_ARRAY = {RESUME_1, RESUME_2, RESUME_3};
 
-    public AbstractArrayStorageTest(Storage storage) {
+    protected AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
     }
 
@@ -47,9 +47,9 @@ public class AbstractArrayStorageTest {
 
     @Test
     public void getAll() {
+        Assert.assertEquals(RESUME_ARRAY.length, storage.size());
         Assert.assertArrayEquals(RESUME_ARRAY, storage.getAll());
     }
-
 
     @Test
     public void save() {
@@ -65,22 +65,24 @@ public class AbstractArrayStorageTest {
     }
 
     @Test(expected = StorageException.class)
-    public void overflow() {
+    public void saveOverflow() {
+        storage.clear();
         try {
-            for (int i = 3; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
+            for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
                 storage.save(new Resume());
             }
         } catch (StorageException e) {
-            Assert.fail();
+            Assert.fail("Storage overflow!");
         }
         storage.save(new Resume());
     }
 
     @Test
     public void update() {
-        storage.update(RESUME_2);
-        Assert.assertEquals(3, storage.size());
+        Resume testResume = new Resume("uuid2");
+        storage.update(testResume);
         Assert.assertEquals(RESUME_2, storage.get(UUID_2));
+        Assert.assertSame(testResume, storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -88,10 +90,11 @@ public class AbstractArrayStorageTest {
         storage.update(new Resume("dummy"));
     }
 
-    @Test
+    @Test(expected = NotExistStorageException.class)
     public void delete() {
         storage.delete(UUID_1);
         Assert.assertEquals(2, storage.size());
+        storage.get(UUID_1);
     }
 
     @Test(expected = NotExistStorageException.class)
