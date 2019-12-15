@@ -7,42 +7,40 @@ import com.urise.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getSearchKey(uuid);
-        if (isExist(searchKey)) {
-            return getResume(searchKey);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        Object searchKey = getCheckedKey(uuid, true);
+        return getResume(searchKey);
     }
 
     @Override
     public void save(Resume resume) {
-        Object searchKey = getSearchKey(resume.getUuid());
-        if (isExist(searchKey)) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            saveResume(searchKey, resume);
-        }
+        Object searchKey = getCheckedKey(resume.getUuid(), false);
+        saveResume(searchKey, resume);
     }
 
     @Override
     public void update(Resume resume) {
-        Object searchKey = getSearchKey(resume.getUuid());
-        if (isExist(searchKey)) {
-            updateResume(searchKey, resume);
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
+        Object searchKey = getCheckedKey(resume.getUuid(), true);
+        updateResume(searchKey, resume);
     }
 
     @Override
     public void delete(String uuid) {
+        Object searchKey = getCheckedKey(uuid, true);
+        deleteResume(searchKey);
+    }
+
+    private Object getCheckedKey(String uuid, boolean existence) {
         Object searchKey = getSearchKey(uuid);
-        if (isExist(searchKey)) {
-            deleteResume(searchKey);
+        if (existence) {
+            if (!isExist(searchKey)) {
+                throw new NotExistStorageException(uuid);
+            }
         } else {
-            throw new NotExistStorageException(uuid);
+            if (isExist(searchKey)) {
+                throw new ExistStorageException(uuid);
+            }
         }
+        return searchKey;
     }
 
     protected abstract Resume getResume(Object key);
