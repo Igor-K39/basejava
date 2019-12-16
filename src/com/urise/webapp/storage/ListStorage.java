@@ -10,12 +10,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Resume getResume(Object key) {
-        for (Resume resume : storage) {
-            if (resume.getUuid().equals(key)) {
-                return resume;
-            }
-        }
-        return null;
+        return storage.get((int) key);
     }
 
     @Override
