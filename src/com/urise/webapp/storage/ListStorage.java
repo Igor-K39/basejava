@@ -10,7 +10,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Resume getResume(Object key) {
-        return storage.get((int) key);
+        return storage.get((Integer) key);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void updateResume(Object key, Resume resume) {
-        int index = (int) key;
-        storage.add(index, resume);
+        int index = (Integer) key;
+        storage.set(index, resume);
     }
 
     @Override
     protected void deleteResume(Object key) {
-        int index = (int) key;
+        int index = (Integer) key;
         storage.remove(index);
     }
 
@@ -42,7 +42,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
