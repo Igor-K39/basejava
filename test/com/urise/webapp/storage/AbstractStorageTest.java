@@ -7,6 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class AbstractStorageTest {
     protected Storage storage;
 
@@ -18,7 +21,7 @@ public abstract class AbstractStorageTest {
     protected static final Resume RESUME_2 = new Resume(UUID_2, "Some Person 2");
     protected static final Resume RESUME_3 = new Resume(UUID_3, "Some Person 3");
     protected static final Resume RESUME_4 = new Resume(UUID_4, "Some Person 4");
-    protected static final Resume[] RESUME_ARRAY = {RESUME_1, RESUME_2, RESUME_3};
+    protected static final List<Resume> RESUME_LIST = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -40,9 +43,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
-        Assert.assertEquals(RESUME_ARRAY.length, storage.size());
-        Assert.assertArrayEquals(RESUME_ARRAY, storage.getAll());
+    public void getAllSorted() {
+        Assert.assertEquals(RESUME_LIST.size(), storage.size());
+        Assert.assertEquals(RESUME_LIST, storage.getAllSorted());
     }
 
     @Test(expected = NotExistStorageException.class)
