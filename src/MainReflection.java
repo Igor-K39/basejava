@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 public class MainReflection {
     public static void main(String[] args) throws Exception {
-        Resume resume = new Resume();
+        Resume resume = new Resume("Some Person");
         Field field = resume.getClass().getDeclaredFields()[0];
         Method method = resume.getClass().getMethod("toString");
 
