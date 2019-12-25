@@ -14,10 +14,8 @@ public class MapUUIDStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> resumes = new ArrayList<>(storage.values());
-        Collections.sort(resumes);
-        return resumes;
+    public List<Resume> getAllResumes() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
