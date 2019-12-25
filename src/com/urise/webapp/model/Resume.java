@@ -30,7 +30,12 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public String toString() {
-        return uuid + " \\ " + fullName;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("uuid: ");
+        stringBuilder.append(uuid);
+        stringBuilder.append(" fullName: ");
+        stringBuilder.append(fullName);
+        return stringBuilder.toString();
     }
 
     @Override
