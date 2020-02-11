@@ -1,15 +1,15 @@
 package com.urise.webapp.model;
 
-import java.time.YearMonth;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Period {
     private String title;
     private String description;
-    private YearMonth startDate;
-    private YearMonth endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    public Period(String title, String description, YearMonth startDate, YearMonth endDate) {
+    public Period(String title, String description, LocalDate startDate, LocalDate endDate) {
         Objects.requireNonNull(title, "title must not be null");
         Objects.requireNonNull(description, "description must nut be null");
         Objects.requireNonNull(startDate, "startDate must not be null");
@@ -35,19 +35,19 @@ public class Period {
         this.description = description;
     }
 
-    public YearMonth getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(YearMonth startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public YearMonth getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(YearMonth endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
