@@ -1,9 +1,6 @@
 package com.urise.webapp.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Initial resume class
@@ -12,8 +9,8 @@ public class Resume implements Comparable<Resume> {
     // Unique identifier
     private final String uuid;
     private String fullName;
-    private final Map<ContactType, String> contacts = new HashMap<>();
-    private final Map<SectionType, Section> sections = new HashMap<>();
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -26,12 +23,25 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
     public Map<ContactType, String> getContacts() {
         return contacts;
     }
 
     public Map<SectionType, Section> getSections() {
         return sections;
+    }
+
+    @Override
+    public int compareTo(Resume o) {
+        return uuid.compareTo(o.getUuid());
     }
 
     @Override
@@ -48,21 +58,8 @@ public class Resume implements Comparable<Resume> {
         return Objects.hash(uuid, fullName);
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
     @Override
     public String toString() {
         return "uuid: " + uuid + " fullName: " + fullName;
-    }
-
-    @Override
-    public int compareTo(Resume o) {
-        return uuid.compareTo(o.getUuid());
     }
 }
