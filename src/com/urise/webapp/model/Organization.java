@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class Organization {
-    private String name;
-    private String website;
+    private final String name;
+    private final String website;
     private final List<Period> periods;
 
     public Organization(String name, String website, List<Period> periods) {
         Objects.requireNonNull(name, "name must not be null");
-        Objects.requireNonNull(website, "website must not be null");
         Objects.requireNonNull(periods, "periods must not be null");
         this.name = name;
         this.website = website;
@@ -21,20 +20,27 @@ public class Organization {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getWebsite() {
         return website;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public List<Period> getPeriods() {
         return periods;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Organization that = (Organization) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(website, that.website) &&
+                Objects.equals(periods, that.periods);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, website, periods);
     }
 
     @Override

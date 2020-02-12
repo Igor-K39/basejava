@@ -1,6 +1,6 @@
 import com.urise.webapp.model.*;
 
-import java.time.YearMonth;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ResumeTestData {
@@ -122,8 +122,8 @@ public class ResumeTestData {
         List<Organization> organizationsData = new ArrayList<>();
         String title = "Автор проекта";
         String description = "Создание, организация и проведение Java онлайн проектов и стажировок.";
-        YearMonth startDate = YearMonth.of(2013, 10);
-        Period period = new Period(title, description, startDate, null);
+        LocalDate startDate = LocalDate.of(2013, 10, 1);
+        Period period = new Period(title, description, startDate, LocalDate.now());
         List<Period> periods = Arrays.asList(period);
         Organization o = new Organization("Java Online Projects", "http://javaops.ru/", periods);
         organizationsData.add(o);
@@ -132,8 +132,8 @@ public class ResumeTestData {
         description = "Проектирование и разработка онлайн платформы управления проектами Wrike " +
                 "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
                 "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.";
-        startDate = YearMonth.of(2014, 10);
-        YearMonth endDate = YearMonth.of(2016, 1);
+        startDate = LocalDate.of(2014, 10, 1);
+        LocalDate endDate = LocalDate.of(2016, 1, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Wrikle", "https://www.wrike.com/", periods);
@@ -148,8 +148,8 @@ public class ResumeTestData {
                 "документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, " +
                 "Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting " +
                 "via ssh tunnels, PL/Python";
-        startDate = YearMonth.of(2012, 4);
-        endDate = YearMonth.of(2014, 10);
+        startDate = LocalDate.of(2012, 4, 1);
+        endDate = LocalDate.of(2014, 10, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("RIT Center", "", periods);
@@ -160,8 +160,8 @@ public class ResumeTestData {
                 "Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация RIA-приложения для " +
                 "администрирования, мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, " +
                 "Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.";
-        startDate = YearMonth.of(2010, 12);
-        endDate = YearMonth.of(2012, 4);
+        startDate = LocalDate.of(2010, 12, 1);
+        endDate = LocalDate.of(2012, 4, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Luxoft (Deutsche Bank)", "http://www.luxoft.ru/", periods);
@@ -171,8 +171,8 @@ public class ResumeTestData {
         description = "Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, " +
                 "v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, " +
                 "статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)";
-        startDate = YearMonth.of(2008, 6);
-        endDate = YearMonth.of(2010, 12);
+        startDate = LocalDate.of(2008, 6, 1);
+        endDate = LocalDate.of(2010, 12, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Yota", "https://www.yota.ru/", periods);
@@ -181,8 +181,8 @@ public class ResumeTestData {
         title = "Разработчик ПО";
         description = "Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) " +
                 "частей кластерного J2EE приложения (OLAP, Data mining).";
-        startDate = YearMonth.of(2007, 3);
-        endDate = YearMonth.of(2008, 6);
+        startDate = LocalDate.of(2007, 3, 1);
+        endDate = LocalDate.of(2008, 6, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Enkata", "http://enkata.com/", periods);
@@ -191,8 +191,8 @@ public class ResumeTestData {
         title = "Разработчик ПО";
         description = "Разработка информационной модели, проектирование интерфейсов, реализация и отладка ПО на " +
                 "мобильной IN платформе Siemens @vantage (Java, Unix).";
-        startDate = YearMonth.of(2005, 1);
-        endDate = YearMonth.of(2007, 2);
+        startDate = LocalDate.of(2005, 1, 1);
+        endDate = LocalDate.of(2007, 2, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Siemens AG", "https://www.siemens.com/ru/ru/home.html", periods);
@@ -200,8 +200,8 @@ public class ResumeTestData {
 
         title = "Инженер по аппаратному и программному тестированию";
         description = "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).";
-        startDate = YearMonth.of(1997, 9);
-        endDate = YearMonth.of(2005, 1);
+        startDate = LocalDate.of(1997, 9, 1);
+        endDate = LocalDate.of(2005, 1, 1);
         period = new Period(title, description, startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Alcatel", "http://www.alcatel.ru/", periods);
@@ -211,32 +211,32 @@ public class ResumeTestData {
 
         List<Organization> educationData = new ArrayList<>();
         title = "Functional Programming Principles in Scala\" by Martin Odersky";
-        startDate = YearMonth.of(2013, 3);
-        endDate = YearMonth.of(2013, 5);
+        startDate = LocalDate.of(2013, 3, 1);
+        endDate = LocalDate.of(2013, 5, 1);
         period = new Period(title, "", startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Coursera", "https://www.coursera.org/course/progfun", periods);
         educationData.add(o);
 
         title = "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"";
-        startDate = YearMonth.of(2011, 3);
-        endDate = YearMonth.of(2011, 4);
+        startDate = LocalDate.of(2011, 3, 1);
+        endDate = LocalDate.of(2011, 4, 1);
         period = new Period(title, "", startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366", periods);
         educationData.add(o);
 
         title = "\t3 месяца обучения мобильным IN сетям (Берлин)";
-        startDate = YearMonth.of(2005, 1);
-        endDate = YearMonth.of(2005, 4);
+        startDate = LocalDate.of(2005, 1, 1);
+        endDate = LocalDate.of(2005, 4, 1);
         period = new Period(title, "", startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Siemens AG", "http://www.siemens.ru/", periods);
         educationData.add(o);
 
         title = "6 месяцев обучения цифровым телефонным сетям (Москва)";
-        startDate = YearMonth.of(1997, 9);
-        endDate = YearMonth.of(1998, 3);
+        startDate = LocalDate.of(1997, 9, 1);
+        endDate = LocalDate.of(1998, 3, 1);
         period = new Period(title, "", startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Alcatel", "http://www.alcatel.ru/", periods);
@@ -244,14 +244,14 @@ public class ResumeTestData {
 
         periods = new ArrayList<>();
         title = "Аспирантура (программист С, С++)";
-        startDate = YearMonth.of(1993, 9);
-        endDate = YearMonth.of(1996, 7);
+        startDate = LocalDate.of(1993, 9, 1);
+        endDate = LocalDate.of(1996, 7, 1);
         period = new Period(title, "", startDate, endDate);
         periods.add(period);
 
         title = "Инженер (программист Fortran, C)";
-        startDate = YearMonth.of(1987, 9);
-        endDate = YearMonth.of(1993, 7);
+        startDate = LocalDate.of(1987, 9, 1);
+        endDate = LocalDate.of(1993, 7, 1);
         period = new Period(title, "", startDate, endDate);
         periods.add(period);
         String name = "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики";
@@ -259,8 +259,8 @@ public class ResumeTestData {
         educationData.add(o);
 
         title = "Закончил с отличием";
-        startDate = YearMonth.of(1984, 9);
-        endDate = YearMonth.of(1987, 6);
+        startDate = LocalDate.of(1984, 9, 1);
+        endDate = LocalDate.of(1987, 6, 1);
         period = new Period(title, "", startDate, endDate);
         periods = Arrays.asList(period);
         o = new Organization("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", periods);
@@ -273,14 +273,9 @@ public class ResumeTestData {
     }
 
     static void printResume(Resume resume) {
-        System.out.println(resume);
-        for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
-            System.out.println(entry);
-        }
+        System.out.println(resume + "\n");
+        resume.getContacts().entrySet().forEach(System.out::println);
         System.out.println();
-
-        for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
-            System.out.println(entry);
-        }
+        resume.getSections().entrySet().forEach(System.out::println);
     }
 }
