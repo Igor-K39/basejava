@@ -53,6 +53,6 @@ public class Period {
 
     @Override
     public String toString() {
-        return title + " " + startDate + " " + endDate;
+        return title + " " + startDate + " " + endDate + " " + description;
     }
 }

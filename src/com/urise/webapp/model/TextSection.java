@@ -10,6 +10,10 @@ public class TextSection extends Section {
         this.text = text;
     }
 
+    public String getText() {
+        return text;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -21,10 +25,6 @@ public class TextSection extends Section {
     @Override
     public int hashCode() {
         return Objects.hash(text);
-    }
-
-    public String getText() {
-        return text;
     }
 
     @Override
