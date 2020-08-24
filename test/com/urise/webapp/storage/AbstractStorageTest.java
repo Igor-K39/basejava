@@ -17,10 +17,14 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
-    protected static final Resume RESUME_1 = new Resume(UUID_1, "Some Person 1");
-    protected static final Resume RESUME_2 = new Resume(UUID_2, "Some Person 2");
-    protected static final Resume RESUME_3 = new Resume(UUID_3, "Some Person 3");
-    protected static final Resume RESUME_4 = new Resume(UUID_4, "Some Person 4");
+    private static final String FULL_NAME_1 = "Григорий Кислин";
+    private static final String FULL_NAME_2 = "Иванов Иван";
+    private static final String FULL_NAME_3 = "Петров Пётр";
+    private static final String FULL_NAME_4 = "Василий Форточкин";
+    protected static final Resume RESUME_1 = ResumeTestData.getFilledResume(UUID_1, FULL_NAME_1);
+    protected static final Resume RESUME_2 = ResumeTestData.getFilledResume(UUID_2, FULL_NAME_2);
+    protected static final Resume RESUME_3 = ResumeTestData.getFilledResume(UUID_3, FULL_NAME_3);
+    protected static final Resume RESUME_4 = ResumeTestData.getFilledResume(UUID_4, FULL_NAME_4);
     protected static final List<Resume> RESUME_LIST = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
 
     protected AbstractStorageTest(Storage storage) {
@@ -30,9 +34,9 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-        storage.save(new Resume(UUID_1, "Some Person 1"));
-        storage.save(new Resume(UUID_2, "Some Person 2"));
-        storage.save(new Resume(UUID_3, "Some Person 3"));
+        storage.save(ResumeTestData.getFilledResume(UUID_1, FULL_NAME_1));
+        storage.save(ResumeTestData.getFilledResume(UUID_2, FULL_NAME_2));
+        storage.save(ResumeTestData.getFilledResume(UUID_3, FULL_NAME_3));
     }
 
     @Test
@@ -68,7 +72,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume testResume = new Resume("uuid2", "Some Person");
+        Resume testResume = ResumeTestData.getFilledResume(UUID_2, "Some Person");
         storage.update(testResume);
         Assert.assertEquals(testResume, storage.get(UUID_2));
         Assert.assertSame(testResume, storage.get(UUID_2));
@@ -76,7 +80,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        storage.update(new Resume("dummy", "dummy"));
+        storage.update(ResumeTestData.getFilledResume("dummy", "dummy"));
     }
 
     @Test(expected = NotExistStorageException.class)
