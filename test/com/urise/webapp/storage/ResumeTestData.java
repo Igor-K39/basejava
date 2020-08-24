@@ -6,8 +6,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class ResumeTestData {
-    public static void main(String[] args) {
-        Resume testResume = new Resume("Григорий Кислин");
+    public static Resume getFilledResume(String uuid, String fullName) {
+        Resume testResume = new Resume(uuid, fullName);
         Map<ContactType, String> contacts = testResume.getContacts();
         Map<SectionType, Section> sections = testResume.getSections();
         Section position;
@@ -270,8 +270,12 @@ public class ResumeTestData {
 
         education = new OrganizationSection(educationData);
         sections.put(SectionType.EDUCATION, education);
+        return testResume;
+    }
 
-        printResume(testResume);
+    public static void main(String[] args) {
+        Resume resume = getFilledResume("uui1", "Григорий Кислин");
+        printResume(resume);
     }
 
     static void printResume(Resume resume) {
