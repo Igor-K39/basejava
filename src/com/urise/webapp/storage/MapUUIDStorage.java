@@ -8,27 +8,27 @@ public class MapUUIDStorage extends AbstractStorage<String> {
     private Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    protected Resume getResume(String key) {
+    protected Resume doGet(String key) {
         return storage.get(key);
     }
 
     @Override
-    public List<Resume> getAllResumes() {
+    public List<Resume> doGetAll() {
         return new ArrayList<>(storage.values());
     }
 
     @Override
-    protected void saveResume(String key, Resume resume) {
+    protected void doSave(String key, Resume resume) {
         storage.put(key, resume);
     }
 
     @Override
-    protected void updateResume(String key, Resume resume) {
+    protected void doUpdate(String key, Resume resume) {
         storage.put(key, resume);
     }
 
     @Override
-    protected void deleteResume(String key) {
+    protected void doDelete(String key) {
         storage.remove(key);
     }
 

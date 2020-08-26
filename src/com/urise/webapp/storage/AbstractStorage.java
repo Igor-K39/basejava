@@ -16,12 +16,12 @@ public abstract class AbstractStorage<SK> implements Storage {
     public Resume get(String uuid) {
         LOG.info("Get " + uuid);
         SK searchKey = getCheckedKey(uuid, true);
-        return getResume(searchKey);
+        return doGet(searchKey);
     }
 
     public List<Resume> getAllSorted() {
         LOG.info("getAllSorted");
-        List<Resume> resumes = getAllResumes();
+        List<Resume> resumes = doGetAll();
         resumes.sort(RESUME_COMPARATOR);
         return resumes;
     }
@@ -30,21 +30,21 @@ public abstract class AbstractStorage<SK> implements Storage {
     public void save(Resume resume) {
         LOG.info("Save " + resume);
         SK searchKey = getCheckedKey(resume.getUuid(), false);
-        saveResume(searchKey, resume);
+        doSave(searchKey, resume);
     }
 
     @Override
     public void update(Resume resume) {
         LOG.info("Update " + resume);
         SK searchKey = getCheckedKey(resume.getUuid(), true);
-        updateResume(searchKey, resume);
+        doUpdate(searchKey, resume);
     }
 
     @Override
     public void delete(String uuid) {
         LOG.info("Delete " + uuid);
         SK searchKey = getCheckedKey(uuid, true);
-        deleteResume(searchKey);
+        doDelete(searchKey);
     }
 
     private SK getCheckedKey(String uuid, boolean existence) {
@@ -63,15 +63,15 @@ public abstract class AbstractStorage<SK> implements Storage {
         return searchKey;
     }
 
-    protected abstract Resume getResume(SK key);
+    protected abstract Resume doGet(SK key);
 
-    protected abstract List<Resume> getAllResumes();
+    protected abstract List<Resume> doGetAll();
 
-    protected abstract void saveResume(SK key, Resume resume);
+    protected abstract void doSave(SK key, Resume resume);
 
-    protected abstract void updateResume(SK key, Resume resume);
+    protected abstract void doUpdate(SK key, Resume resume);
 
-    protected abstract void deleteResume(SK key);
+    protected abstract void doDelete(SK key);
 
     protected abstract SK getSearchKey(String uuid);
 

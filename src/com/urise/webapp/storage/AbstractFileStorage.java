@@ -24,7 +24,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected Resume getResume(File file) {
+    protected Resume doGet(File file) {
         try {
             return doRead(file);
         } catch (IOException e) {
@@ -33,16 +33,16 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected List<Resume> getAllResumes() {
+    protected List<Resume> doGetAll() {
         List<Resume> resumes = new ArrayList<>();
         for (File file : Objects.requireNonNull(directory.listFiles())) {
-            resumes.add(getResume(file));
+            resumes.add(doGet(file));
         }
         return resumes;
     }
 
     @Override
-    protected void saveResume(File file, Resume resume) {
+    protected void doSave(File file, Resume resume) {
         try {
             if (file.createNewFile()) {
                 doWrite(resume, file);
@@ -55,7 +55,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void updateResume(File file, Resume resume) {
+    protected void doUpdate(File file, Resume resume) {
         try {
             doWrite(resume, file);
         } catch (IOException e) {
@@ -64,7 +64,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void deleteResume(File file) {
+    protected void doDelete(File file) {
         if (!file.delete()) {
             throw new StorageException("Deleting error", file.getName());
         }
