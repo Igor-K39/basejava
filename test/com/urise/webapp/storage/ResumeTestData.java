@@ -9,13 +9,13 @@ public class ResumeTestData {
     public static Resume getFilledResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid, fullName);
         Map<ContactType, String> contacts = testResume.getContacts();
-        Map<SectionType, Section> sections = testResume.getSections();
-        Section position;
-        Section personal;
-        Section achievement;
-        Section qualification;
-        Section experience;
-        Section education;
+        Map<SectionType, AbstractSection> sections = testResume.getSections();
+        AbstractSection position;
+        AbstractSection personal;
+        AbstractSection achievement;
+        AbstractSection qualification;
+        AbstractSection experience;
+        AbstractSection education;
 
         contacts.put(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
         contacts.put(ContactType.SKYPE, "grugory.kislin");
