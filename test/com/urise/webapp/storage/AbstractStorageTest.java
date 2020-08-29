@@ -18,15 +18,11 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
-    private static final String FULL_NAME_1 = "Григорий Кислин";
-    private static final String FULL_NAME_2 = "Иванов Иван";
-    private static final String FULL_NAME_3 = "Петров Пётр";
-    private static final String FULL_NAME_4 = "Василий Форточкин";
-    protected static final Resume RESUME_1 = ResumeTestData.getFilledResume(UUID_1, FULL_NAME_1);
-    protected static final Resume RESUME_2 = ResumeTestData.getFilledResume(UUID_2, FULL_NAME_2);
-    protected static final Resume RESUME_3 = ResumeTestData.getFilledResume(UUID_3, FULL_NAME_3);
-    protected static final Resume RESUME_4 = ResumeTestData.getFilledResume(UUID_4, FULL_NAME_4);
-    protected static final List<Resume> RESUME_LIST = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+    static final Resume RESUME_1 = ResumeTestData.getFilledResume(UUID_1,"Григорий Кислин");
+    static final Resume RESUME_2 = ResumeTestData.getFilledResume(UUID_2, "Иванов Иван");
+    static final Resume RESUME_3 = ResumeTestData.getFilledResume(UUID_3, "Петров Пётр");
+    static final Resume RESUME_4 = ResumeTestData.getFilledResume(UUID_4, "Василий Форточкин");
+    static final List<Resume> RESUME_LIST = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -35,9 +31,9 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-        storage.save(ResumeTestData.getFilledResume(UUID_1, FULL_NAME_1));
-        storage.save(ResumeTestData.getFilledResume(UUID_2, FULL_NAME_2));
-        storage.save(ResumeTestData.getFilledResume(UUID_3, FULL_NAME_3));
+        storage.save(RESUME_1);
+        storage.save(RESUME_2);
+        storage.save(RESUME_3);
     }
 
     @Test
