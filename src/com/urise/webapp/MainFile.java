@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class MainFile {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         String filePath = ".\\.gitignore";
 
         File file = new File(filePath);
@@ -31,16 +31,18 @@ public class MainFile {
             throw new RuntimeException("Error", e);
         }
 
-        System.out.println("\nHW_8 starts here");
+        System.out.println("\nHW_9 starts here");
         String project_dir = System.getProperty("user.dir");
-        printContent(new File(project_dir));
+        System.out.println("Checking directory: " + project_dir);
+        printContent(new File(project_dir), "");
     }
 
-    private static void printContent(File directory) throws IOException {
+    private static void printContent(File directory, String offset) {
         for (File file : Objects.requireNonNull(directory.listFiles())) {
-            System.out.println(file.getCanonicalPath());
+            String prefix = file.isDirectory() ? "Directory: " : "File: ";
+            System.out.println(offset + prefix + file.getName());
             if (file.isDirectory()) {
-                printContent(file);
+                printContent(file, offset + "  ");
             }
         }
     }
