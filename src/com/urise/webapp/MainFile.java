@@ -39,9 +39,10 @@ public class MainFile {
 
     private static void printContent(File directory, String offset) {
         for (File file : Objects.requireNonNull(directory.listFiles())) {
-            String prefix = file.isDirectory() ? "Directory: " : "File: ";
-            System.out.println(offset + prefix + file.getName());
-            if (file.isDirectory()) {
+            if (!file.isDirectory()) {
+                System.out.println(offset + "File: " + file.getName());
+            } else {
+                System.out.println(offset + "Directory: " + file.getName());
                 printContent(file, offset + "  ");
             }
         }
