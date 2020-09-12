@@ -34,7 +34,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path key) {
         try {
-            return serializer.doRead(new BufferedInputStream(new FileInputStream(key.toFile())));
+            return serializer.doRead(new BufferedInputStream(Files.newInputStream(key)));
         } catch (IOException e) {
             throw new StorageException("Reading error", getFileName(key), e);
         }
@@ -48,7 +48,8 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void doSave(Path key, Resume resume) {
         try {
-            serializer.doWrite(resume, new BufferedOutputStream(new FileOutputStream(key.toFile())));
+            createIfNotExist(key);
+            serializer.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(key)));
         } catch (IOException e) {
             throw new StorageException("Writing error", getFileName(key), e);
         }
@@ -85,7 +86,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.toFile().list()).length;
+        return getAllFiles().mapToInt(file -> 1).sum();
     }
 
     private Stream<Path> getAllFiles() {
@@ -98,5 +99,16 @@ public class PathStorage extends AbstractStorage<Path> {
 
     private String getFileName(Path path) {
         return path.getFileName().normalize().toString();
+    }
+
+    private void createIfNotExist(Path file) {
+        try {
+            if (!Files.exists(file)) {
+                Files.createFile(file);
+            }
+        } catch (IOException e) {
+            String fileName = file.getFileName().normalize().toString();
+            throw new StorageException("I/O Error while creating a new file", fileName, e);
+        }
     }
 }
