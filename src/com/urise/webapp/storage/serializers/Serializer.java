@@ -8,5 +8,6 @@ import java.io.OutputStream;
 
 public interface Serializer {
     Resume doRead(InputStream is) throws IOException;
+
     void doWrite(Resume resume, OutputStream os) throws IOException;
 }

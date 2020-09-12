@@ -6,6 +6,7 @@ import com.urise.webapp.storage.serializers.Serializer;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume doGet(File file) {
+        checkIfNull(file);
         try {
             return serializer.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
@@ -37,7 +39,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> doGetAll() {
         List<Resume> resumes = new ArrayList<>();
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
+        for (File file : getListFiles()) {
             resumes.add(doGet(file));
         }
         return resumes;
@@ -84,15 +86,28 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
-            if (!file.delete()) {
-                throw new StorageException("The file has not been deleted", file.getName());
-            }
-        }
+        File[] listFiles = getListFiles();
+        Arrays.stream(listFiles).forEach(this::doDelete);
     }
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.listFiles()).length;
+        return getListFiles().length;
+    }
+
+    private void checkIfNull(File file) {
+        if (file == null) {
+            throw new StorageException("The file or directory must not be null.");
+        }
+    }
+
+    private File[] getListFiles() {
+        File[] listFiles = directory.listFiles();
+
+        if (listFiles != null) {
+            return listFiles;
+        } else {
+            throw new StorageException("I/O Error while getting list of files of " + directory);
+        }
     }
 }
