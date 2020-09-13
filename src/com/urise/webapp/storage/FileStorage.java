@@ -6,7 +6,6 @@ import com.urise.webapp.storage.serializers.Serializer;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +27,6 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume doGet(File file) {
-        checkIfNull(file);
         try {
             return serializer.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
@@ -87,7 +85,9 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] listFiles = getListFiles();
-        Arrays.stream(listFiles).forEach(this::doDelete);
+        for (File file : listFiles) {
+            doDelete(file);
+        }
     }
 
     @Override

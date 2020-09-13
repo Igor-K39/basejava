@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -86,7 +87,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public int size() {
-        return getAllFiles().mapToInt(file -> 1).sum();
+        return (int) getAllFiles().count();
     }
 
     private Stream<Path> getAllFiles() {
