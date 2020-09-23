@@ -7,16 +7,16 @@ import java.io.*;
 
 public class JsonStreamSerializer implements StreamSerializer {
     @Override
-    public Resume doRead(InputStream is) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(is)) {
-            return JsonParser.read(reader, Resume.class);
+    public void doWrite(Resume resume, OutputStream os) throws IOException {
+        try (OutputStreamWriter writer = new OutputStreamWriter(os)) {
+            JsonParser.write(resume, writer);
         }
     }
 
     @Override
-    public void doWrite(Resume resume, OutputStream os) throws IOException {
-        try (OutputStreamWriter writer = new OutputStreamWriter(os)) {
-            JsonParser.write(resume, writer);
+    public Resume doRead(InputStream is) throws IOException {
+        try (InputStreamReader reader = new InputStreamReader(is)) {
+            return JsonParser.read(reader, Resume.class);
         }
     }
 }
