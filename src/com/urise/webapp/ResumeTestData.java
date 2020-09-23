@@ -3,7 +3,10 @@ package com.urise.webapp;
 import com.urise.webapp.model.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class ResumeTestData {
     public static Resume getFilledResume(String uuid, String fullName) {
@@ -18,7 +21,7 @@ public class ResumeTestData {
         AbstractSection education;
 
         contacts.put(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
-        contacts.put(ContactType.SKYPE, "grugory.kislin");
+        contacts.put(ContactType.SKYPE, "grigory.kislin");
         contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
         contacts.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
         contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
