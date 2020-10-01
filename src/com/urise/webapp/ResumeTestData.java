@@ -1,17 +1,11 @@
 package com.urise.webapp;
 
-import com.urise.webapp.model.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import com.urise.webapp.model.Resume;
 
 public class ResumeTestData {
     public static Resume getFilledResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid, fullName);
-        Map<ContactType, String> contacts = testResume.getContacts();
+        /*Map<ContactType, String> contacts = testResume.getContacts();
         Map<SectionType, AbstractSection> sections = testResume.getSections();
         AbstractSection position;
         AbstractSection personal;
@@ -273,6 +267,7 @@ public class ResumeTestData {
 
         education = new OrganizationSection(educationData);
         sections.put(SectionType.EDUCATION, education);
+         */
         return testResume;
     }
 
