@@ -1,9 +1,8 @@
 package com.urise.webapp;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MainStream {
@@ -16,32 +15,17 @@ public class MainStream {
     }
 
     private static int minValue(int[] values) {
-        AtomicInteger result = new AtomicInteger();
-        Arrays.stream(values)
+        return Arrays.stream(values)
                 .sorted()
                 .distinct()
-                .boxed()
-                .collect(Collectors.toList())
-                .forEach(x -> {
-                    result.updateAndGet(v -> v * 10);
-                    result.addAndGet(x);
-                });
-        return result.get();
+                .reduce((x, y) -> x * 10 + y)
+                .orElse(-1);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        AtomicInteger sum = new AtomicInteger();
-        List<Integer> odds = new ArrayList<>();
-        List<Integer> evens = new ArrayList<>();
+        Map<Boolean, List<Integer>> map = integers.stream()
+                .collect(Collectors.partitioningBy(x -> x % 2 == 0));
 
-        integers.forEach(value -> {
-            sum.addAndGet(value);
-            if (value % 2 == 0) {
-                evens.add(value);
-            } else {
-                odds.add(value);
-            }
-        });
-        return sum.get() % 2 == 0 ? odds : evens;
+        return map.get(map.get(false).size() % 2 == 0);
     }
 }
