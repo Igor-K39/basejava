@@ -2,13 +2,16 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -52,12 +55,24 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        String query = "INSERT INTO resume(uuid, full_name) VALUES(?, ?)";
-        sqlHelper.process(query, preparedStatement -> {
-            preparedStatement.setString(1, resume.getUuid());
-            preparedStatement.setString(2, resume.getFullName());
-            preparedStatement.execute();
-            return resume;
+        sqlHelper.executeTransactional(connection -> {
+            String query = "INSERT INTO resume(uuid, full_name) VALUES(?, ?)";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setString(1, resume.getUuid());
+                ps.setString(2, resume.getFullName());
+                ps.execute();
+            }
+            query = "INSERT INTO contact(type, value, resume_uuid) VALUES(?, ?, ?)";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                for (Map.Entry<ContactType, String> contact : resume.getContacts().entrySet()) {
+                    ps.setString(1, contact.getKey().getTitle());
+                    ps.setString(2, contact.getValue());
+                    ps.setString(3, resume.getUuid());
+                    ps.addBatch();
+                }
+                ps.execute();
+            }
+            return null;
         });
     }
 
