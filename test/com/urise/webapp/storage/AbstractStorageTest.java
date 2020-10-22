@@ -1,16 +1,16 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.Config;
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.ResumeTestData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
@@ -48,7 +48,10 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        final List<Resume> RESUME_LIST = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+        final List<Resume> RESUME_LIST = new ArrayList<>();
+        RESUME_LIST.add(RESUME_1);
+        RESUME_LIST.add(RESUME_2);
+        RESUME_LIST.add(RESUME_3);
         List<Resume> allSorted = storage.getAllSorted();
         Assert.assertEquals(storage.size(), allSorted.size());
         Assert.assertEquals(RESUME_LIST, allSorted);

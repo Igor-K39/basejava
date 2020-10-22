@@ -1,11 +1,16 @@
 package com.urise.webapp;
 
+import com.urise.webapp.model.AbstractSection;
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.SectionType;
+
+import java.util.Map;
 
 public class ResumeTestData {
     public static Resume getFilledResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid, fullName);
-        /*Map<ContactType, String> contacts = testResume.getContacts();
+        Map<ContactType, String> contacts = testResume.getContacts();
         Map<SectionType, AbstractSection> sections = testResume.getSections();
         AbstractSection position;
         AbstractSection personal;
@@ -21,7 +26,7 @@ public class ResumeTestData {
         contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
         contacts.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         contacts.put(ContactType.HOMEPAGE, "http://gkislin.ru/");
-
+        /*
         String positionData = "Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям";
         position = new TextSection(positionData);
         sections.put(SectionType.OBJECTIVE, position);
