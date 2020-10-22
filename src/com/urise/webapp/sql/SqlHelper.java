@@ -27,6 +27,22 @@ public class SqlHelper {
         }
     }
 
+    public <T>T executeTransactional(SqlProcessor<T> transaction) {
+        try (Connection connection = connectionFactory.getConnection()){
+            try {
+                connection.setAutoCommit(false);
+                T value = transaction.execute(connection);
+                connection.commit();
+                return value;
+            } catch (SQLException evt) {
+                connection.rollback();
+                throw ExceptionUtil.convertSQLException(evt);
+            }
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
+
     public interface QueryProcessor<T> {
         T process(PreparedStatement ps) throws SQLException;
     }
