@@ -6,10 +6,7 @@ import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.SqlHelper;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class SqlStorage implements Storage {
@@ -36,10 +33,10 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(uuid);
                 }
                 Resume resume = new Resume(
-                        rs.getString("uuid").trim(),
-                        rs.getString("full_name"));
+                        extractValue(rs, "uuid"),
+                        extractValue(rs, "full_name"));
                 do {
-                    addContact(rs, resume);
+                    addContactIfPresent(rs, resume);
                 } while (rs.next());
                 return resume;
             }
@@ -48,8 +45,8 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.executeTransactional(connection -> {
-            List<Resume> resumes = new ArrayList<>();
+        return sqlHelper.execute(connection -> {
+            Map<String, Resume> resumes = new LinkedHashMap<>();
             String query = ""
                     + "SELECT * "
                     + "FROM resume "
@@ -63,15 +60,13 @@ public class SqlStorage implements Storage {
                     return Collections.emptyList();
                 }
                 do {
-                    String uuid = rs.getString("uuid").trim();
-                    if (!containsUuid(resumes, uuid)) {
-                        String fullName = rs.getString("full_name");
-                        Resume resume = new Resume(uuid, fullName);
-                        resumes.add(resume);
-                    }
-                    addContact(rs, Objects.requireNonNull(getResumeByUuid(resumes, uuid)));
+                    String uuid = extractValue(rs, "uuid");
+                    Resume resume = resumes.computeIfAbsent(
+                            uuid,
+                            r -> new Resume(uuid, extractValue(rs, "full_name")));
+                    addContactIfPresent(rs, resume);
                 } while (rs.next());
-                return resumes;
+                return new ArrayList<>(resumes.values());
             }
         });
     }
@@ -85,18 +80,8 @@ public class SqlStorage implements Storage {
                 ps.setString(2, resume.getFullName());
                 ps.execute();
             }
-
-            query = "INSERT INTO contact(type, value, resume_uuid) VALUES(?, ?, ?)";
-            try (PreparedStatement ps = connection.prepareStatement(query)) {
-                for (Map.Entry<ContactType, String> contact : resume.getContacts().entrySet()) {
-                    ps.setString(1, contact.getKey().name());
-                    ps.setString(2, contact.getValue());
-                    ps.setString(3, resume.getUuid());
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-            return null;
+            saveContacts(connection, resume);
+            return resume;
         });
     }
 
@@ -111,27 +96,15 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(resume.getUuid());
                 }
             }
-
-            query = "UPDATE contact SET value = ? WHERE resume_uuid = ? AND type = ? ";
-            try (PreparedStatement ps = connection.prepareStatement(query)) {
-                for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
-                    ps.setString(1, entry.getValue());
-                    ps.setString(2, resume.getUuid());
-                    ps.setString(3, entry.getKey().name());
-                    ps.addBatch();
-                }
-                int[] affectedRows = ps.executeBatch();
-                if (containsZero(affectedRows)) {
-                    throw new StorageException("Updating contact did not exist");
-                }
-            }
+            deleteContacts(connection, resume.getUuid());
+            saveContacts(connection, resume);
             return resume;
         });
     }
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.executeTransactional(connection -> {
+        sqlHelper.execute(connection -> {
             String query = "DELETE FROM resume WHERE uuid = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 ps.setString(1, uuid);
@@ -146,7 +119,7 @@ public class SqlStorage implements Storage {
     @SuppressWarnings("SqlWithoutWhere")
     @Override
     public void clear() {
-        sqlHelper.executeTransactional(connection -> {
+        sqlHelper.execute(connection -> {
             String query = "DELETE FROM resume";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 return ps.executeUpdate();
@@ -156,7 +129,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public int size() {
-        return sqlHelper.executeTransactional(connection -> {
+        return sqlHelper.execute(connection -> {
             String query = "SELECT COUNT(*) FROM resume";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 ResultSet rs = ps.executeQuery();
@@ -168,36 +141,48 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private void addContact(ResultSet rs, Resume resume) throws SQLException {
-        ContactType contactType = ContactType.valueOf(rs.getString("type"));
-        String contactValue = rs.getString("value");
-        resume.getContacts().put(contactType, contactValue);
+    private void addContactIfPresent(ResultSet rs, Resume resume) {
+        String contactType = extractValue(rs, "type");
+        if (contactType != null) {
+            String contactValue = extractValue(rs, "value");
+            resume.getContacts().put(ContactType.valueOf(contactType), contactValue);
+        }
     }
 
-    private Resume getResumeByUuid(List<Resume> resumes, String uuid) {
-        for (Resume resume : resumes) {
-            if (resume.getUuid().equals(uuid)) {
-                return resume;
+    private void saveContacts(Connection connection, Resume resume) {
+        String query = "INSERT INTO contact(type, value, resume_uuid) VALUES (?, ?, ?)";
+        sqlHelper.executeTransactional(connection1 -> {
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                for (Map.Entry<ContactType, String> contact : resume.getContacts().entrySet()) {
+                    ps.setString(1, contact.getKey().name());
+                    ps.setString(2, contact.getValue());
+                    ps.setString(3, resume.getUuid());
+                    ps.addBatch();
+                }
+                return ps.executeBatch();
             }
-        }
-        return null;
+        });
     }
 
-    private boolean containsUuid(List<Resume> resumes, String uuid) {
-        for (Resume resume : resumes) {
-            if (resume.getUuid().equals(uuid)) {
-                return true;
+    private void deleteContacts(Connection connection, String uuid) {
+        sqlHelper.execute(connection1 -> {
+            String query = "DELETE FROM contact WHERE resume_uuid = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setString(1, uuid);
+                return ps.executeUpdate();
             }
-        }
-        return false;
+        });
     }
 
-    private boolean containsZero(int[] array) {
-        for (int i : array) {
-            if (i == 0) {
-                return true;
+    private String extractValue(ResultSet rs, String columnLabel) {
+        try {
+            String value = rs.getString(columnLabel);
+            if (value != null) {
+                return value.trim();
             }
+            return null;
+        } catch (SQLException e) {
+            throw new StorageException("Error while extracting value: " + columnLabel);
         }
-        return false;
     }
 }
