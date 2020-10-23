@@ -46,4 +46,8 @@ public class SqlHelper {
     public interface QueryProcessor<T> {
         T process(PreparedStatement ps) throws SQLException;
     }
+
+    public interface SqlProcessor<T> {
+        T execute(Connection connection) throws SQLException;
+    }
 }
