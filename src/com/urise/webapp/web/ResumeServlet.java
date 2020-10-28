@@ -1,12 +1,37 @@
 package com.urise.webapp.web;
 
+import com.urise.webapp.storage.SqlStorage;
+import com.urise.webapp.storage.Storage;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
+import java.util.Properties;
 
-public class ResumeServlet extends javax.servlet.http.HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+public class ResumeServlet extends HttpServlet {
+    private Storage storage;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        File propertiesFile = new File("..\\conf\\resumes.properties");
+        System.out.println(" " + System.getProperty("user.dir"));
+        Properties properties = new Properties();
+        try (InputStream is = new FileInputStream(propertiesFile)) {
+                properties.load(is);
+                String dbUrl = properties.getProperty("db.url");
+                String dbUser = properties.getProperty("db.user");
+                String dbPassword = properties.getProperty("db.password");
+                storage = new SqlStorage(dbUrl, dbUser, dbPassword);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
@@ -14,7 +39,7 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
-        String name = request.getParameter("name");
-        response.getWriter().write(name == null ? "Hello Resumes!" : "Hello " + name + "!");
+        request.setAttribute("resumes", storage.getAllSorted());
+        request.getRequestDispatcher("/resumes.jsp").forward(request, response);
     }
 }
