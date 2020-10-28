@@ -50,6 +50,14 @@ public class Resume implements Comparable<Resume>, Serializable {
         return sections;
     }
 
+    public void addContact(ContactType contactType, String value) {
+        contacts.put(contactType, value);
+    }
+
+    public void addSection(SectionType sectionType, AbstractSection section) {
+        sections.put(sectionType, section);
+    }
+
     @Override
     public int compareTo(Resume o) {
         return uuid.compareTo(o.getUuid());

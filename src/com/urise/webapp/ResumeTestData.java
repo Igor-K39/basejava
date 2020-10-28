@@ -1,10 +1,9 @@
 package com.urise.webapp;
 
-import com.urise.webapp.model.AbstractSection;
-import com.urise.webapp.model.ContactType;
-import com.urise.webapp.model.Resume;
-import com.urise.webapp.model.SectionType;
+import com.urise.webapp.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ResumeTestData {
@@ -19,14 +18,14 @@ public class ResumeTestData {
         AbstractSection experience;
         AbstractSection education;
 
-        contacts.put(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
-        contacts.put(ContactType.SKYPE, "grigory.kislin");
-        contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
-        contacts.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
-        contacts.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-        contacts.put(ContactType.HOMEPAGE, "http://gkislin.ru/");
-        /*
+        testResume.addContact(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
+        testResume.addContact(ContactType.SKYPE, "grigory.kislin");
+        testResume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        testResume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        testResume.addContact(ContactType.GITHUB, "https://github.com/gkislin");
+        testResume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        testResume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
+
         String positionData = "Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям";
         position = new TextSection(positionData);
         sections.put(SectionType.OBJECTIVE, position);
@@ -122,7 +121,7 @@ public class ResumeTestData {
         qualificationData.add(textData);
         qualification = new ListSection(qualificationData);
         sections.put(SectionType.QUALIFICATIONS, qualification);
-
+        /*
         List<Organization> organizationsData = new ArrayList<>();
         String title = "Автор проекта";
         String description = "Создание, организация и проведение Java онлайн проектов и стажировок.";
