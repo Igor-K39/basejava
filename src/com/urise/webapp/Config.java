@@ -37,7 +37,12 @@ public class Config {
         return new SqlStorage(dbUrl, dbUser, dbPassword);
     }
 
-    public static void main(String[] args) {
-
+    private static File getHomeDir() {
+        String prop = System.getProperty("homeDir");
+        File homeDir = new File(prop == null ? "." : prop);
+        if (!homeDir.isDirectory()) {
+            throw new IllegalStateException(homeDir + " is not directory");
+        }
+        return homeDir;
     }
 }
