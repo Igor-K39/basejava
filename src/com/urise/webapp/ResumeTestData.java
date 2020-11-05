@@ -2,7 +2,9 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -121,7 +123,7 @@ public class ResumeTestData {
         qualificationData.add(textData);
         qualification = new ListSection(qualificationData);
         sections.put(SectionType.QUALIFICATIONS, qualification);
-        /*
+
         List<Organization> organizationsData = new ArrayList<>();
         String title = "Автор проекта";
         String description = "Создание, организация и проведение Java онлайн проектов и стажировок.";
@@ -271,7 +273,7 @@ public class ResumeTestData {
 
         education = new OrganizationSection(educationData);
         sections.put(SectionType.EDUCATION, education);
-         */
+
         return testResume;
     }
 
