@@ -1,28 +1,97 @@
-header {
+header, footer {
     background: none repeat scroll 0 0 #A6C9E2;
     color: #2E6E9E;
     font-size: 20px;
     padding: 5px 20px;
+    text-align: center;
 }
 
-footer {
-    background: none repeat scroll 0 0 #A6C9E2;
-    color: #2E6E9E;
-    font-size: 20px;
-    padding: 5px 20px;
-    margin: 20px 0;
+section {
+    background: none repeat scroll 0 0 #FAFAFA;
+    width: 900px;
+    margin: auto;
+}
+
+.section-name {
+    margin-bottom: 3px;
+    margin-top: 20px;
+}
+
+.resume-list {
+    margin: auto;
 }
 
 table {
     border-collapse: collapse;
 }
 
-caption {
+.title-cell {
+    padding-top: 10px;
+}
+
+.resume-list td {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+ol {
+    margin: 0;
+}
+
+ul {
+    margin: 0;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+li:last-child {
+    margin-bottom: 0;
+}
+
+dl {
+    margin: 8px 0;
+    padding: 0;
+}
+
+dt {
+    display: inline-block;
+    width: 110px;
+}
+
+dd {
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: top;
+}
+
+.objective {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.organization-link {
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.period-title {
+    font-weight: bold;
+}
+
+.period-date {
+    min-width: 140px;
+}
+
+.submit {
+    text-align: center;
+    font-size: 15px;
+    padding-top: 10px;
     padding-bottom: 10px;
 }
 
-td {
-    border: 1px solid black;
-    padding-left: 20px;
-    padding-right: 20px;
+.colspan-all {
+    column-span: all;
 }
