@@ -3,6 +3,7 @@ package com.urise.webapp.web;
 import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.ResumeUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,9 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
@@ -42,8 +42,7 @@ public class ResumeServlet extends HttpServlet {
         }
 
         for (SectionType type : SectionType.values()) {
-            AbstractSection section = getSection(request, type);
-            addCheckedSection(type, section, resume);
+            fillBySection(request, type, resume);
         }
         String action = getCheckedParameterValue(request, "storageAction");
         doStorageAction(storage, resume, action);
@@ -77,7 +76,7 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "view":
             case "edit":
-                resume = storage.get(uuid);
+                resume = ResumeUtil.getResumeTo(storage.get(uuid));
                 request.setAttribute("resume", resume);
                 request.setAttribute("storageAction", "edit");
                 request.getRequestDispatcher(
@@ -91,28 +90,113 @@ public class ResumeServlet extends HttpServlet {
         }
     }
 
-    private AbstractSection getSection(HttpServletRequest request, SectionType type) {
+    private void fillBySection(HttpServletRequest request, SectionType type, Resume resume) {
         switch (type) {
             case OBJECTIVE:
             case PERSONAL:
-                String text = request.getParameter(type.name().toLowerCase());
-                return text != null ? new TextSection(text) : null;
+                addTextSection(request, type, resume);
+                break;
             case ACHIEVEMENT:
             case QUALIFICATIONS:
-                List<String> strings = getListOfValues(request, type.name().toLowerCase());
-                return strings != null ? new ListSection(strings) : null;
+                addListSection(request, type, resume);
+                break;
             case EDUCATION:
             case EXPERIENCE:
-                return null;
+                addOrganizationSection(request, type, resume);
+                break;
             default:
                 throw new IllegalStateException();
         }
     }
 
-    private void addCheckedSection(SectionType type, AbstractSection section, Resume resume) {
-        if (section != null) {
+    private void addTextSection(HttpServletRequest request, SectionType type, Resume resume) {
+        String content = request.getParameter(type.name().toLowerCase());
+        if (content != null && !content.equals("")) {
+            resume.addSection(type, new TextSection(content));
+        }
+    }
+
+    private void addListSection(HttpServletRequest request, SectionType type, Resume resume) {
+        List<String> strings = getListOfValues(request, type.name().toLowerCase());
+        if (strings != null && strings.size() > 0) {
+            resume.addSection(type, new ListSection(strings));
+        }
+    }
+
+    private void addOrganizationSection(HttpServletRequest request, SectionType type, Resume resume) {
+        String prefix = getOrganizationPrefix(type);
+        String[] titles = request.getParameterValues(prefix + "Name");
+        String[] websites = request.getParameterValues(prefix + "Website");
+        String[] positions = request.getParameterValues(prefix + "Position");
+        String[] descriptions = request.getParameterValues(prefix + "Description");
+        String[] starts = request.getParameterValues(prefix + "Start");
+        String[] ends = request.getParameterValues(prefix + "End");
+        if (hasNull(titles, positions)) {
+            return;
+        }
+        if (type == SectionType.EDUCATION) {
+            descriptions = new String[titles.length];
+            Arrays.fill(descriptions, "");
+        }
+        Map<String, String> jobs = new LinkedHashMap<>();
+        Map<String, List<Period>> namedPeriods = new LinkedHashMap<>();
+        List<Organization> organizations = new ArrayList<>();
+
+        for (int i = 0; i < titles.length; i++) {
+            if (!titles[i].equals("")) {
+                jobs.put(getCheckedArrayValue(titles, i), getCheckedArrayValue(websites, i));
+                List<Period> periods = namedPeriods.computeIfAbsent(getCheckedArrayValue(titles, i), jobTitle -> new ArrayList<>());
+                periods.add(new Period(
+                        getCheckedArrayValue(positions, i),
+                        getCheckedArrayValue(descriptions, i),
+                        getParamDate(starts[i]),
+                        getParamDate(ends[i])));
+            }
+        }
+        for (Map.Entry<String, String> job : jobs.entrySet()) {
+            String name = job.getKey();
+            String website = job.getValue();
+            organizations.add(new Organization(name, website, namedPeriods.get(name)));
+        }
+        if (organizations.size() > 0) {
+            OrganizationSection section = new OrganizationSection(organizations);
             resume.addSection(type, section);
         }
+    }
+
+    private String getOrganizationPrefix(SectionType type) {
+        if (type == SectionType.EXPERIENCE) {
+            return "job";
+        } else if (type == SectionType.EDUCATION) {
+            return "edu";
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private LocalDate getParamDate(String value) {
+        if (!value.equals("")) {
+            return LocalDate.parse(value);
+        } else {
+            return LocalDate.now();
+        }
+    }
+
+    private String getCheckedArrayValue(String[] param, int position) {
+        if (param == null) {
+            return "";
+        } else {
+            return param[position] != null ? param[position] : "";
+        }
+    }
+
+    private boolean hasNull(String[]... strings) {
+        for (String[] parameter : strings) {
+            if (parameter == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getCheckedParameterValue(HttpServletRequest request, String name) {
