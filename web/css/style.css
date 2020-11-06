@@ -10,6 +10,7 @@ section {
     background: none repeat scroll 0 0 #FAFAFA;
     width: 900px;
     margin: auto;
+    padding: 20px;
 }
 
 .section-name {
@@ -39,7 +40,12 @@ ol {
 }
 
 ul {
-    margin: 0;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+ul > li {
+    list-style-type: none;
 }
 
 li {
