@@ -15,4 +15,9 @@ public class DateUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
         return startDate.format(formatter) + " - " + endDate.format(formatter);
     }
+
+    public static String makeHtmlValue(LocalDate localDate) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return dateTimeFormatter.format(localDate);
+    }
 }
