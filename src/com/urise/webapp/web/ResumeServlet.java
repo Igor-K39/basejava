@@ -3,6 +3,7 @@ package com.urise.webapp.web;
 import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.DateUtil;
 import com.urise.webapp.util.ResumeUtil;
 
 import javax.servlet.ServletConfig;
@@ -24,11 +25,15 @@ public class ResumeServlet extends HttpServlet {
         storage = Config.get().getSqlStorage();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
 
         String uuid = getCheckedParameterValue(request, "uuid");
         String fullName = getCheckedParameterValue(request, "fullName");
+        if (fullName.length() == 0) {
+            response.sendRedirect("resume");
+            return;
+        }
         Resume resume = new Resume(uuid, fullName);
         resume.setFullName(fullName);
 
@@ -76,7 +81,7 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "view":
             case "edit":
-                resume = ResumeUtil.getResumeTo(storage.get(uuid));
+                resume = storage.get(uuid);
                 request.setAttribute("resume", resume);
                 request.setAttribute("storageAction", "edit");
                 request.getRequestDispatcher(
@@ -128,40 +133,30 @@ public class ResumeServlet extends HttpServlet {
         String[] titles = request.getParameterValues(prefix + "Name");
         String[] websites = request.getParameterValues(prefix + "Website");
         String[] positions = request.getParameterValues(prefix + "Position");
-        String[] descriptions = request.getParameterValues(prefix + "Description");
+        String[] descriptions = request.getParameterValues(prefix + "Duties");
         String[] starts = request.getParameterValues(prefix + "Start");
         String[] ends = request.getParameterValues(prefix + "End");
+        String[] counters = request.getParameterValues(prefix + "Count");
         if (hasNull(titles, positions)) {
             return;
         }
         if (type == SectionType.EDUCATION) {
-            descriptions = new String[titles.length];
+            descriptions = new String[positions.length];
             Arrays.fill(descriptions, "");
         }
-        Map<String, String> jobs = new LinkedHashMap<>();
-        Map<String, List<Period>> namedPeriods = new LinkedHashMap<>();
-        List<Organization> organizations = new ArrayList<>();
 
+        int offset = 0;
+        List<Organization> organizations = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
-            if (!titles[i].equals("")) {
-                jobs.put(getCheckedArrayValue(titles, i), getCheckedArrayValue(websites, i));
-                List<Period> periods = namedPeriods.computeIfAbsent(getCheckedArrayValue(titles, i), jobTitle -> new ArrayList<>());
-                periods.add(new Period(
-                        getCheckedArrayValue(positions, i),
-                        getCheckedArrayValue(descriptions, i),
-                        getParamDate(starts[i]),
-                        getParamDate(ends[i])));
+            int periodCount = Integer.parseInt(counters[i]);
+            List<Period> periods = new ArrayList<>();
+            for (int j = offset; j < offset + periodCount; j++) {
+                periods.add(new Period(positions[j], descriptions[j], LocalDate.parse(starts[j]), LocalDate.parse(ends[j])));
             }
+            offset += periodCount;
+            organizations.add(new Organization(titles[i], websites[i], periods));
         }
-        for (Map.Entry<String, String> job : jobs.entrySet()) {
-            String name = job.getKey();
-            String website = job.getValue();
-            organizations.add(new Organization(name, website, namedPeriods.get(name)));
-        }
-        if (organizations.size() > 0) {
-            OrganizationSection section = new OrganizationSection(organizations);
-            resume.addSection(type, section);
-        }
+        resume.addSection(type, new OrganizationSection(organizations));
     }
 
     private String getOrganizationPrefix(SectionType type) {

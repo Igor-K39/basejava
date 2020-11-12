@@ -37,14 +37,14 @@
             </tr>
             <c:if test="${name.equals('OBJECTIVE') || name.equals('PERSONAL')}">
                 <tr>
-                    <td colspan="2" ${name.equals("OBJECTIVE") ? "class='objective'" : ""}>
+                    <td colspan="2" class="padding-left" ${name.equals("OBJECTIVE") ? "class='objective'" : ""}>
                         <%= ((TextSection) sectionEntry.getValue()).getText() %>
                     </td>
                 </tr>
             </c:if>
             <c:if test="${name.equals('ACHIEVEMENT') || name.equals('QUALIFICATIONS')}">
                 <tr>
-                    <td colspan="2">
+                    <td colspan="2" class="padding-left">
                         <ul>
                             <c:forEach var="listItem" items="<%=((ListSection) sectionEntry.getValue()).getStrings()%>">
                                 <li>${listItem}</li>
@@ -63,7 +63,7 @@
                     </tr>
                     <c:forEach var="period" items="${organization.periods}">
                         <tr>
-                            <td class="period-date">${DateUtil.getFormattedAsPeriod(period.startDate, period.endDate)}</td>
+                            <td class="period-date-view">${DateUtil.getFormattedAsPeriod(period.startDate, period.endDate)}</td>
                             <td class="period-title">${period.title}</td>
                         </tr>
                         <tr>

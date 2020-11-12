@@ -1,89 +1,134 @@
-function removeElement(o) {
+function removeElement(o, prefix) {
+    //o - period
+    let periods = o.parentElement;
+    let organization = periods.parentElement;
+    let hidden = document.createElement('input');
+    hidden.setAttribute('type', 'hidden');
+    hidden.setAttribute('name', prefix + 'Count');
+
     o.remove();
+    organization.lastElementChild.remove();
+    hidden.setAttribute('value', (periods.childElementCount - 1).toString());
+    organization.append(hidden);
 }
 
-function addTextRow(o) {
-    let row = document.createElement('tr');
-    row.innerHTML = "<td><strong> some text field should be here </strong><td>"
-        + "<td><input type='button' onclick='removeElement(this.parentElement.parentElement)'></td>";
-    o.append(row);
-}
-
-function addAchieveListItem(object, name) {
+function addTextListItem(object, name) {
     let listElement = document.createElement('li');
     let n = name.toString();
-    listElement.innerHTML = "<input type='text' size=50 name=" + n + ">"
-        + "<input type='button' value='удалить' onclick='removeElement(this.parentElement)'>";
+    listElement.innerHTML = "<div class='label'>" +
+                                "<label>" +
+                                    "<input type='text' name='" + n + "' size='70'>" +
+                                "</label>" +
+                            "</div>" +
+                            "<div class='content'>" +
+                                "<input type='button' value='удалить' onclick='removeElement(this.parentElement.parentElement)'>" +
+                            "</div>";
     object.append(listElement);
 }
 
-function addOrganizationItem() {
-    let listElement = document.createElement('li');
-    listElement.innerHTML =
-        "<table>" +
-            "<tr>" +
-                "<td class='title-cell'><label for='jobName'>Наименование организации</label></td>" +
-                "<td class='title-cell'><input type='text' name='jobName' size='50' id='jobName'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='jobWebsite'>Официальный сайт</label></td>" +
-                "<td><input type='text' name='jobWebsite' size='50' id='jobWebsite'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='jobPosition'>Позиция</label></td>" +
-                "<td><input type='text' name='jobPosition' size='50' id='jobPosition'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='jobDescription'>Основные обязанности</label></td>" +
-                "<td><textarea cols='50' rows='5' name='jobDescription' id='jobDescription'></textarea></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='jobStart'>Начало</label></td>" +
-                "<td><input type='date' name='jobStart' id='jobStart'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='jobEnd'>Конец</label></td>" +
-                "<td><input type='date' name='jobEnd' id='jobEnd'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><input type='button' value='удалить' onclick='removeElement(this.parentElement.parentElement.parentElement.parentElement)'></td>" +
-                "<td></td>" +
-            "</tr>" +
-        "</table>";
+function addPeriod(object, prefix) {
+    let listElement = document.createElement('div');
+    let inHtml = "<fieldset>" +
+                    "<div class='position table'>" +
+                        "<div class='label'>Позиция</div>" +
+                        "<div class='content'><label><input type='text' size='50' name='" + prefix + "Position' " +
+                            "value=''></label>" +
+                        "</div>" +
+                    "</div>";
 
-    document.getElementById("job-list").append(listElement);
+    if (prefix === "job") {
+        let duties = "<div class='duties table'>" +
+                        "<div class='label'>Обязанности</div>" +
+                        "<div class='content'>" +
+                            "<label><textarea cols='52' rows='5' name='" + prefix + "Duties'></textarea></label>" +
+                        "</div>" +
+                     "</div>";
+        inHtml += duties;
+    }
+
+    inHtml +=   "<div class='period-date table'>" +
+                    "<div class='date table'>" +
+                        "<div class='label'>Начало</div>" +
+                        "<div class='content'>" +
+                            "<input type='date' name='" + prefix + "Start' value=''>" +
+                        "</div>" +
+                    "</div>" +
+                    "<div class='date table'>" +
+                        "<div class='label'>Конец</div>" +
+                        "<div class='content'>" +
+                            "<input type='date' name='" + prefix + "End' value=''>" +
+                        "</div>" +
+                    "</div>" +
+                "</div>" +
+                "<div class='delete-button table'>" +
+                    "<input type='button' value='удалить период' " +
+                        "onclick='removeElement(this.parentElement.parentElement.parentElement, \"job\")'>" +
+                "</div>" +
+            "</fieldset>";
+
+    listElement.className = 'period table';
+    listElement.innerHTML = inHtml;
+
+    //object - period-button
+    let periods = object.parentElement;
+    let organization = periods.parentElement;
+    organization.lastElementChild.remove();
+    object.remove();
+    periods.insertBefore(listElement, periods.firstChild);
+    let count = periods.childElementCount;
+    let hidden = document.createElement('input');
+    hidden.setAttribute('type', 'hidden');
+    hidden.setAttribute('name', prefix + 'Count');
+    hidden.setAttribute('value', count.toString());
+    organization.append(hidden);
+    periods.insertBefore(object, periods.firstChild);
 }
 
-function addEducationItem() {
+function addOrganizationItem(object, p) {
+    let prefix = p.toString();
+    let name = "Организация";
     let listElement = document.createElement('li');
-    listElement.innerHTML =
-        "<table>" +
-            "<tr>" +
-                "<td class='title-cell'><label for='eduName'>Наименование учреждения</label></td>" +
-                "<td class='title-cell'><input type='text' name='eduName' size='50' id='eduName'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='eduWebsite'>Официальный сайт</label></td>" +
-                "<td><input type='text' name='eduWebsite' size='50' id='eduWebsite'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='eduPosition'>Описание</label></td>" +
-                "<td><input type='text' name='eduPosition' size='50' id='eduPosition'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='eduStart'>Начало</label></td>" +
-                "<td><input type='date' name='eduStart' id='eduStart'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><label for='eduEnd'>Конец</label></td>" +
-                "<td><input type='date' name='eduEnd' id='eduEnd'></td>" +
-            "</tr>" +
-            "<tr>" +
-                "<td><input type='button' value='удалить' onclick='removeElement(this.parentElement.parentElement.parentElement.parentElement)'></td>" +
-                "<td></td>" +
-            "</tr>" +
-        "</table>";
-
-    document.getElementById("edu-list").append(listElement);
+    if (prefix === "edu") {
+        name = "Учреждение";
+    }
+    let inHtml =
+        "<div class='org-item'>" +
+            "<div class='name table'>" +
+                "<div class='label'>" +
+                    "<label for='job-name'>" + name + "</label>" +
+                "</div>" +
+                "<div class='content'>" +
+                    "<input type='text' id='job-name' name='"+ prefix + "Name' size='50' value=''>" +
+                "</div>" +
+            "</div>" +
+            "<div class='website table'>" +
+                "<div class='label'>" +
+                    "<label for='job-website'>Веб-сайт</label>" +
+                "</div>" +
+                "<div class='content'>" +
+                    "<input type='text' id='job-website' name='" + prefix + "Website' size='50' value=''>" +
+                "</div>" +
+            "</div>" +
+            "<div class='periods table' id='job-periods'>" +
+                "<div class='period-button table'>" +
+                    "<div class='label'>Новый период</div>" +
+                    "<div class='content'>" +
+                        "<input type='button' value='добавить' " +
+                            "onclick='addPeriod(this.parentElement.parentElement, \"" + prefix + "\")'>" +
+                    "</div>" +
+                "</div>" +
+            "</div>" +
+            "<div class='delete-button table'>" +
+                "<div class='label'>Организация</div>" +
+                "<div class='content'>" +
+                    "<input type='button' value='удалить' " +
+                        "onclick='removeElement(this.parentElement.parentElement.parentElement.parentElement)'>" +
+                "</div>" +
+            "</div>" +
+            "<input type='hidden' name='" + prefix + "Count' value='0'>" +
+        "</div>";
+        inHtml += "";
+        listElement.innerHTML = inHtml;
+        object.append(listElement);
 }
 

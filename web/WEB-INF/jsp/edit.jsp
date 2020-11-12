@@ -4,208 +4,323 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+    <link rel='stylesheet' href='css/style.css'>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
     <jsp:useBean id="resume" type="com.urise.webapp.model.Resume" scope="request"/>
     <title>Resume ${resume.fullName}</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
-    <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
-        <script type="text/javascript" src="js/scripts.js">
+    <form method='post' action='resume' enctype='application/x-www-form-urlencoded'>
+        <script type='text/javascript' src='js/scripts.js'>
         </script>
 
-        <input type="hidden" name="uuid" value="${resume.uuid}">
-        <input type="hidden" name="storageAction" value="<%=request.getAttribute("storageAction")%>">
-        <dl>
-            <dt><label for="fullName"><strong>Имя:</strong></label></dt>
-            <dd><input id="fullName" type="text" name="fullName" size="50" value="${resume.fullName}"></dd>
-        </dl>
-        <strong>Контакты:</strong>
-        <dl>
-            <c:forEach var="type" items="<%=ContactType.values()%>">
-                <dt><label for="${type.name()}">${type.title}</label></dt>
-                <dd><input id="${type.name()}" type="text" name="${type.name()}" size="30"
-                           value="${resume.contacts.get(type)}"></dd>
-                <br>
-            </c:forEach>
-        </dl>
+        <input type='hidden' name='uuid' value='${resume.uuid}'>
+        <input type='hidden' name='storageAction' value='<%=request.getAttribute("storageAction")%>'>
+
+        <div class='text-container table'>
+            <div class='label'>
+                <strong><label for='full-name'>Имя:</label></strong>
+            </div>
+            <div class='content'>
+                <input id='full-name' type='text' name='fullName' size='30' value='${resume.fullName}'>
+            </div>
+        </div>
         <hr>
 
-        <table>
-            <tr>
-                <c:set var="objective" value="<%= (TextSection) resume.getSection(SectionType.OBJECTIVE) %>"/>
-                <td class="title-cell"><label for="objective"><strong>Позиция</strong></label></td>
-                <td class="title-cell"><input type="text" size="80" name="objective" id="objective"
-                                              value="${objective.text != null ? objective.text : ""}">
-                </td>
-            </tr>
-            <tr>
-                <c:set var="personal" value="<%= (TextSection) resume.getSection(SectionType.PERSONAL) %>"/>
-                <td class="title-cell"><label for="personal"><strong>Личные качества</strong></label></td>
-                <td class="title-cell"><input type="text" size="80" name="personal" id="personal"
-                                              value="${personal.text != null ? personal.text : ""}">
-                </td>
-            </tr>
-            <tr>
-                <td class="title-cell"><strong>Достижения</strong></td>
-                <td class="title-cell"><input type="button" value="Добавить"
-                                              onclick="addAchieveListItem(document.getElementById('achieve-list'), 'achievement')">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <ol id="achieve-list">
-                        <c:set var="achievementSection"
-                               value="<%= ((ListSection) resume.getSection(SectionType.ACHIEVEMENT)) %>"/>
+        <div class='text-list'>
+            <c:if test="<%= ContactType.values().length > 0 %>">
+                <div class='title-cell'>
+                    <strong>Контакты</strong>
+                </div>
+            </c:if>
 
+            <c:forEach var="type" items="<%=ContactType.values()%>">
+                <div class='contact table'>
+                    <div class='label'>
+                        <label for='${type.name()}'>${type.title}</label>
+                    </div>
+                    <div class='content'>
+                        <input id='${type.name()}' type='text' name='${type.name()}' size='30'
+                               value='${resume.contacts.get(type)}'>
+                    </div>
+                </div>
+            </c:forEach>
+            <hr>
+        </div>
+
+        <div class='sections'>
+            <div class='text-container table'>
+                <c:set var="objective" value="<%= (TextSection) resume.getSection(SectionType.OBJECTIVE) %>"/>
+                <div class='label'>
+                    <label for='objective'><strong>Позиция</strong></label>
+                </div>
+                <div class='content'>
+                    <input type='text' size='30' name='objective' id='objective'
+                           value='${objective.text != null ? objective.text : ''}'>
+                </div>
+            </div>
+
+            <div class='text-container table'>
+                <c:set var="personal" value="<%= (TextSection) resume.getSection(SectionType.PERSONAL) %>"/>
+                <div class='label'>
+                    <label for='personal'><strong>Личные качества</strong></label>
+                </div>
+                <div class='content'>
+                    <input type='text' size='30' name='personal' id='personal'
+                           value='${personal.text != null ? personal.text : ''}'>
+                </div>
+            </div>
+
+            <div class='text-list table'>
+                <div class='header table'>
+                    <div class='label'>
+                        <strong>Достижения</strong>
+                    </div>
+                    <div class='content inline-block left'>
+                        <input type='button' value='Добавить'
+                               onclick='addTextListItem(document.getElementById("achieves"), "achievement")'>
+                    </div>
+                </div>
+
+                <div class='text-list-items'>
+                    <c:set var="achievementSection"
+                           value="<%= ((ListSection) resume.getSection(SectionType.ACHIEVEMENT)) %>"/>
+
+                    <ol id='achieves'>
                         <c:if test="${achievementSection != null}">
                             <c:forEach var="achieve" items="${achievementSection.strings}">
-                                <li><input type="text" size=80 name='achievement' value='${achieve}'>
-                                    <input type="button" value="удалить" onclick="removeElement(this.parentElement)">
+                                <li>
+                                    <div class='label'>
+                                        <label>
+                                            <input type='text' size=70 name='achievement' value='${achieve}'>
+                                        </label>
+                                    </div>
+                                    <div class='content'>
+                                        <input type='button' value='удалить'
+                                               onclick='this.parentElement.parentElement.remove()'>
+                                    </div>
                                 </li>
                             </c:forEach>
                         </c:if>
                     </ol>
-                </td>
-            </tr>
-            <tr>
-                <td class="title-cell"><strong>Квалификация</strong></td>
-                <td class="title-cell"><input type="button" value="Добавить"
-                                              onclick="addAchieveListItem(document.getElementById('qualification-list'), 'qualifications')">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <ol id="qualification-list">
-                        <c:set var="qualificationSection"
-                               value="<%= ((ListSection) resume.getSection(SectionType.QUALIFICATIONS))%>"/>
+                </div>
+            </div>
 
+            <div class='text-list table'>
+                <div class='header table'>
+                    <div class='label'>
+                        <strong>Квалификация</strong>
+                    </div>
+                    <div class='content inline-block left'>
+                        <input type='button' value='Добавить'
+                               onclick='addTextListItem(document.getElementById("qualifications"), "qualifications")'>
+                    </div>
+                </div>
+
+                <div class='text-list-items'>
+                    <c:set var="qualificationSection"
+                           value="<%= ((ListSection) resume.getSection(SectionType.QUALIFICATIONS)) %>"/>
+
+                    <ol id='qualifications'>
                         <c:if test="${qualificationSection != null}">
                             <c:forEach var="qualification" items="${qualificationSection.strings}">
-                                <li><input type="text" size=80 name="qualifications" value="${qualification}">
-                                    <input type="button" value="удалить" onclick="removeElement(this.parentElement)">
+                                <li>
+                                    <div class='label'>
+                                        <label>
+                                            <input type='text' size=70 name='qualifications'
+                                                   value='${qualification}'>
+                                        </label>
+                                    </div>
+                                    <div class='content'>
+                                        <input type='button' value='удалить'
+                                               onclick='this.parentElement.parentElement.remove()'>
+                                    </div>
                                 </li>
                             </c:forEach>
                         </c:if>
                     </ol>
-                </td>
-            </tr>
-        </table>
-        <hr>
-        <div class="title-cell">
-            <strong class="title-cell">Опыт работы</strong>
-            <input type="button" value="Добавить место работы"
-                   onclick="addOrganizationItem()">
-        </div>
-        <ul id="job-list">
-            <c:set var="experienceSection"
-                   value="<%= ((OrganizationSection) resume.getSection(SectionType.EXPERIENCE)) %>"/>
+                </div>
+            </div>
+            <hr>
+            <div class='title-cell'>
+                <strong class='title-cell'>Опыт работы</strong>
+                <input type='button' value='Добавить место работы'
+                       onclick='addOrganizationItem(document.getElementById("job-list"), "job")'>
+            </div>
+            <ol id='job-list'>
+                <c:set var="experienceSection"
+                       value="<%= ((OrganizationSection) resume.getSection(SectionType.EXPERIENCE)) %>"/>
 
-            <c:if test="${experienceSection != null}">
+                <c:if test="${experienceSection != null}">
                 <c:forEach var="jobItem" items="${experienceSection.organizations}">
-                    <li>
-                        <table>
-                            <tr>
-                                <td class="title-cell"><label for="jobName">Наименование организации</label></td>
-                                <td class="title-cell"><input type="text" name="jobName" size="50" id="jobName"
-                                                              value="${jobItem.name}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="jobWebsite">Официальный сайт</label></td>
-                                <td><input type="text" name="jobWebsite" size="50" id="jobWebsite"
-                                           value="${jobItem.website}"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="jobPosition">Позиция</label></td>
-                                <td><input type="text" name="jobPosition" size="50" id="jobPosition"
-                                           value="${jobItem.periods.get(0).title}"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="jobDescription">Основные обязанности</label></td>
-                                <td><textarea cols="52" rows="5" name="jobDescription"
-                                              id="jobDescription">${jobItem.periods.get(0).description}</textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="jobStart">Начало</label></td>
-                                <td><input type="date" name="jobStart" id="jobStart"
-                                           value="${DateUtil.makeHtmlValue(jobItem.periods.get(0).startDate)}"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="jobEnd">Конец</label></td>
-                                <td><input type="date" name="jobEnd" id="jobEnd"
-                                           value="${DateUtil.makeHtmlValue(jobItem.periods.get(0).endDate)}"></td>
-                            </tr>
-                            <tr>
-                                <td><input type="button" value="удалить"
-                                           onclick="removeElement(this.parentElement.parentElement.parentElement.parentElement)">
-                                </td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </li>
-                </c:forEach>
-            </c:if>
-        </ul>
-        <hr>
-        <div class="title-cell">
-            <strong class="title-cell">Образование</strong>
-            <input type="button" value="Добавить учреждение"
-                   onclick="addEducationItem()">
-        </div>
-        <ul id="edu-list">
-            <c:set var="educationSection"
-                   value="<%= ((OrganizationSection) resume.getSection(SectionType.EDUCATION)) %>"/>
+                <li>
+                    <div class='org-item'>
+                        <div class='name table'>
+                            <div class='label'><label for='job-name'>Организация</label></div>
+                            <div class='content'><input type='text' id='job-name' name='jobName' size='50'
+                                                        value='${jobItem.name}'></div>
+                        </div>
+                        <div class='website table'>
+                            <div class='label'><label for='job-website'>Веб-сайт</label></div>
+                            <div class='content'><input type='text' id='job-website' name='jobWebsite'
+                                                        size='50' value='${jobItem.website}'></div>
+                        </div>
+                        <div class='periods table' id='job-periods'>
+                            <div class='period-button table'>
+                                <div class='label'>Новый период</div>
+                                <div class='content'><input type='button' value='добавить'
+                                                            onclick='addPeriod(this.parentElement.parentElement, "job")'>
+                                </div>
+                            </div>
+                            <c:if test="${jobItem.periods.size() > 0}">
+                                <c:forEach var="period" items="${jobItem.periods}">
+                                    <div class='period table'>
+                                        <fieldset>
+                                            <div class='position table'>
+                                                <div class='label'>Позиция</div>
+                                                <div class='content'><label><input type='text' size='50'
+                                                                                   name='jobPosition'
+                                                                                   value='${period.title}'>
+                                                </label>
+                                                </div>
+                                            </div>
+                                            <div class='duties table'>
+                                                <div class='label'>Обязанности</div>
+                                                <div class='content'><label><textarea cols='52' rows='5'
+                                                                                      name='jobDuties'>${period.description}</textarea>
+                                                </label>
+                                                </div>
+                                            </div>
+                                            <div class='period-date table'>
+                                                <div class='date table'>
+                                                    <div class='label'>Начало</div>
+                                                    <div class='content'>
+                                                        <input type='date' name='jobStart'
+                                                               value='${DateUtil.makeHtmlValue(period.startDate)}'>
+                                                    </div>
+                                                </div>
+                                                <div class='date table'>
+                                                    <div class='label'>Конец</div>
+                                                    <div class='content'>
+                                                        <input type='date' name='jobEnd'
+                                                               value='${DateUtil.makeHtmlValue(period.endDate)}'>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='delete-button'>
+                                                <input type='button' value='удалить период'
+                                                       onclick='removeElement(this.parentElement.parentElement.parentElement, "job")'>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </c:forEach>
+                            </c:if>
+                        </div>
+                        <div class='delete-button table'>
+                            <div class='label'>Организация</div>
+                            <div class='content'>
+                                <input type='button' value='удалить'
+                                       onclick='this.parentElement.parentElement.parentElement.parentElement.remove()'>
+                            </div>
+                        </div>
+                        <input type='hidden' name='jobCount' value="${jobItem.periods.size()}">
+                        </c:forEach>
+                        </c:if>
+                    </div>
+            </ol>
 
-            <c:if test="${experienceSection != null}">
+            <hr>
+            <div class='title-cell'>
+                <strong class='title-cell'>Образование</strong>
+                <input type='button' value='Добавить учреждение'
+                       onclick='addOrganizationItem(document.getElementById("edu-list"), "edu")'>
+            </div>
+            <ol id='edu-list'>
+                <c:set var="educationSection"
+                       value="<%= ((OrganizationSection) resume.getSection(SectionType.EDUCATION)) %>"/>
+
+                <c:if test="${educationSection != null}">
                 <c:forEach var="eduItem" items="${educationSection.organizations}">
-                    <li>
-
-                        <table>
-                            <tr>
-                                <td class="title-cell"><label for="eduName">Наименование учреждения</label></td>
-                                <td class="title-cell"><input type="text" name="eduName" size="50" id="eduName"
-                                                              value="${eduItem.name}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="eduWebsite">Официальный сайт</label></td>
-                                <td><input type="text" name="eduWebsite" size="50" id="eduWebsite"
-                                           value="${eduItem.website}"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="eduPosition">Описание</label></td>
-                                <td><input type="text" name="eduPosition" size="50" id="eduPosition"
-                                           value="${eduItem.periods.get(0).title}"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="eduStart">Начало</label></td>
-                                <td><input type="date" name="eduStart" id="eduStart"
-                                           value="${DateUtil.makeHtmlValue(eduItem.periods.get(0).startDate)}"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="eduEnd">Конец</label></td>
-                                <td><input type="date" name="eduEnd" id="eduEnd"
-                                           value="${DateUtil.makeHtmlValue(eduItem.periods.get(0).endDate)}"></td>
-                            </tr>
-                            <tr>
-                                <td><input type="button" value="удалить"
-                                           onclick="removeElement(this.parentElement.parentElement.parentElement.parentElement)">
-                                </td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </li>
-                </c:forEach>
-            </c:if>
-        </ul>
-        <button type="submit">Сохранить</button>
-        <button name="cancel" onclick="window.history.back()">Отменить</button>
+                <li>
+                    <div class='org-item'>
+                        <div class='name table'>
+                            <div class='label'><label for='edu-name'>Учреждение</label></div>
+                            <div class='content'><input type='text' id='edu-name' name='eduName' size='50'
+                                                        value='${eduItem.name}'></div>
+                        </div>
+                        <div class='website table'>
+                            <div class='label'><label for='edu-website'>Веб-сайт</label></div>
+                            <div class='content'><input type='text' id='edu-website' name='eduWebsite'
+                                                        size='50' value='${eduItem.website}'></div>
+                        </div>
+                        <div class='periods table' id='edu-periods'>
+                            <div class='period-button table'>
+                                <div class='label'>Новый период</div>
+                                <div class='content'><input type='button' value='добавить'
+                                                            onclick='addPeriod(this.parentElement.parentElement, "edu")'>
+                                </div>
+                            </div>
+                            <c:if test="${eduItem.periods.size() > 0}">
+                                <c:forEach var="period" items="${eduItem.periods}">
+                                    <div class='period table'>
+                                        <fieldset>
+                                            <div class='position table'>
+                                                <div class='label'>Позиция</div>
+                                                <div class='content'><label><input type='text' size='50'
+                                                                                   name='eduPosition'
+                                                                                   value='${period.title}'>
+                                                </label>
+                                                </div>
+                                            </div>
+                                            <div class='period-date table'>
+                                                <div class='date table'>
+                                                    <div class='label'>Начало</div>
+                                                    <div class='content'>
+                                                        <input type='date' name='eduStart'
+                                                               value='${DateUtil.makeHtmlValue(period.startDate)}'>
+                                                    </div>
+                                                </div>
+                                                <div class='date table'>
+                                                    <div class='label'>Конец</div>
+                                                    <div class='content'>
+                                                        <input type='date' name='eduEnd'
+                                                               value='${DateUtil.makeHtmlValue(period.endDate)}'>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='delete-button'>
+                                                <input type='button' value='удалить период'
+                                                       onclick='removeElement(this.parentElement.parentElement.parentElement, "edu")'>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </c:forEach>
+                            </c:if>
+                        </div>
+                        <div class='delete-button table'>
+                            <div class='label'>Учреждение</div>
+                            <div class='content'>
+                                <input type='button' value='удалить'
+                                       onclick='this.parentElement.parentElement.parentElement.parentElement.remove()'>
+                            </div>
+                        </div>
+                        <input type='hidden' name='eduCount' value="${eduItem.periods.size()}">
+                        </c:forEach>
+                        </c:if>
+                    </div>
+            </ol>
+        </div>
+        <div class="submit">
+            <button type="submit">Сохранить</button>
+        </div>
     </form>
+    <form method="get" action="resume">
+        <input type="submit" value="Назад к списку">
+    </form>
+
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

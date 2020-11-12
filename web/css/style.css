@@ -1,9 +1,36 @@
-header, footer {
+fieldset {
+    margin: 5px;
+}
+
+form {
+    margin-bottom: 5px;
+}
+
+hr {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    margin: 0;
+}
+
+header,
+footer {
     background: none repeat scroll 0 0 #A6C9E2;
     color: #2E6E9E;
     font-size: 20px;
     padding: 5px 20px;
     text-align: center;
+}
+
+li {
+    display: inline-block;
+}
+
+ol, ul {
+    margin: 0;
+    padding: 0;
 }
 
 section {
@@ -13,102 +40,122 @@ section {
     padding: 20px;
 }
 
-.center {
-    text-align: center;
-}
-
-.to-the-list-link {
-    font-size: 20px;
-    font-weight: bold;
-    font-style: italic;
-    text-underline: none;
-}
-
-.section-name {
-    margin-bottom: 3px;
-    margin-top: 20px;
-}
-
-.resume-list {
-    margin: auto;
-}
-
-table {
-    border-collapse: collapse;
-}
-
-.title-cell {
-    padding-top: 10px;
-}
-
-.resume-list td {
-    border: 1px solid black;
-    padding: 10px;
-}
-
-ol {
+.contact .label,
+.contact .content {
     margin: 0;
 }
 
-ul {
-    margin-left: 0;
-    padding-left: 0;
+.content {
+    float: right;
+    min-width: 200px;
+    margin-left: 5px;
 }
 
-ul > li {
-    list-style-type: none;
+.content,
+.label {
+    margin-top: 5px;
 }
 
-li {
-    margin-bottom: 5px;
-}
-
-li:last-child {
-    margin-bottom: 0;
-}
-
-dl {
-    margin: 8px 0;
-    padding: 0;
-}
-
-dt {
+.inline-block {
     display: inline-block;
-    width: 110px;
 }
 
-dd {
-    display: inline-block;
-    margin-left: 8px;
-    vertical-align: top;
+.center {
+    display: table;
+    margin: auto;
 }
 
-.objective {
-    font-weight: bolder;
-    font-size: 1.2em;
+.to-the-list-link {
+    font-size: 1.5em;
+    font-style: italic;
+}
+
+.date,
+.period-date {
+    margin: 0;
+}
+
+.label {
+    float: left;
+    min-width: 130px;
+}
+
+.name .label,
+.website .label,
+.period-button .label,
+.delete-button .label {
+    font-weight: bold;
+}
+
+.left {
+    float: left;
+}
+
+.list-caption {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 22px;
+}
+
+.list-item {
+    font-size: 22px;
+}
+
+.list-item td {
+    border: 1px solid #000000;
+    padding: 10px;
 }
 
 .organization-link {
-    font-size: 20px;
+    padding-left: 30px;
+}
+
+.org-item {
+    margin-bottom: 20px;
+}
+
+.padding-left {
+    padding-left: 40px;
+}
+
+.period {
+    padding-left: 20px;
+}
+
+.period-date-view {
+    padding-left: 40px;
+    width: 120px;
     font-weight: bold;
-    text-decoration: none;
 }
 
 .period-title {
     font-weight: bold;
 }
 
-.period-date {
-    min-width: 140px;
+.resume-list {
+    border-collapse: collapse;
+    margin: auto;
 }
 
 .submit {
-    text-align: center;
-    font-size: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    margin-top: 15px;
 }
 
-.colspan-all {
-    column-span: all;
+.section-name {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.table {
+    display: table;
+}
+
+.text-container,
+.text-list {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.title-cell {
+    margin-bottom: 5px;
 }

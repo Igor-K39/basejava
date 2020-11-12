@@ -11,7 +11,7 @@
 <jsp:include page="fragments/header.jsp"/>
 <section>
     <table class="resume-list">
-        <tr>
+        <tr class="list-caption">
             <th>Имя</th>
             <th>e-mail</th>
             <th></th>
@@ -19,7 +19,7 @@
         </tr>
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" type="com.urise.webapp.model.Resume"/>
-            <tr>
+            <tr class="list-item">
                 <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
                 <td>${resume.contacts.get(ContactType.EMAIL)}</td>
                 <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png" alt="delete"></a></td>
